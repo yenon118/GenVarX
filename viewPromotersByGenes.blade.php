@@ -27,8 +27,8 @@ $result_arr = $info['result_arr'];
     for ($i = 0; $i < count($result_arr); $i++) {
         echo "<b>Queried Gene: </b>" . $result_arr[$i]->Name . " (" . $result_arr[$i]->Chromosome . ":" . $result_arr[$i]->Start . "-" . $result_arr[$i]->End . ") (" . $result_arr[$i]->Strand . ")";
         echo "<br /><br />";
-        // echo "<b>Promoter Region: </b>" . $result_arr[$i]->Promoter_Start . "-" . $result_arr[$i]->Promoter_End;
-        // echo "<br /><br />";
+        echo "<b>Promoter Region: </b>" . $result_arr[$i]->Promoter_Start . "-" . $result_arr[$i]->Promoter_End;
+        echo "<br /><br />";
 
         if (count($result_arr[$i]->Motif_Data) > 0) {
 

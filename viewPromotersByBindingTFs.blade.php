@@ -2,6 +2,7 @@
 
 include resource_path() . '/views/system/config.blade.php';
 $organism = $info['organism'];
+$upstream_length = $info['upstream_length'];
 $binding_tf_arr = $info['binding_tf_arr'];
 $result_arr = $info['result_arr'];
 
@@ -49,7 +50,7 @@ $result_arr = $info['result_arr'];
                     echo "<tr bgcolor=\"" . $tr_bgcolor . "\">";
                     foreach ($motif_result_arr[$j] as $key => $value) {
                         if ($key == "Binding_TF") {
-                            echo "<td style=\"border:1px solid black; min-width:80px;\"><a target=\"_blank\" href=\"" . route('system.tools.GenVarX.viewPromoterOnSelectedBindingTF', ['organism'=>$organism, 'Motif'=>$value, 'Gene'=>$motif_result_arr[$j]->Gene, 'Chromosome'=>$motif_result_arr[$j]->Binding_Chromosome, 'Motif_Start'=>$motif_result_arr[$j]->Binding_Start, 'Motif_End'=>$motif_result_arr[$j]->Binding_End, 'Gene_Binding_Sequence'=>$motif_result_arr[$j]->Gene_Binding_Sequence]) . "\">" . $value . "</a></td>";
+                            echo "<td style=\"border:1px solid black; min-width:80px;\"><a target=\"_blank\" href=\"" . route('system.tools.GenVarX.viewPromoterOnSelectedBindingTF', ['organism'=>$organism, 'Motif'=>$value, 'Gene'=>$motif_result_arr[$j]->Gene, 'Chromosome'=>$motif_result_arr[$j]->Binding_Chromosome, 'Motif_Start'=>$motif_result_arr[$j]->Binding_Start, 'Motif_End'=>$motif_result_arr[$j]->Binding_End, 'Gene_Binding_Sequence'=>$motif_result_arr[$j]->Gene_Binding_Sequence, 'Upstream_Length'=>$upstream_length]) . "\">" . $value . "</a></td>";
                         } else {
                             echo "<td style=\"border:1px solid black; min-width:80px;\">" . $value . "</td>";
                         }

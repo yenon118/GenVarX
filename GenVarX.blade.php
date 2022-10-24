@@ -24,7 +24,7 @@ $chromosome_array = $info['chromosome_array'];
         <td width="50%" align="center" valign="top" style="border:1px solid #999999; padding:10px; background-color:#f8f8f8; text-align:left;">
             <form action="{{ route('system.tools.GenVarX.viewPromotersByGenes', ['organism'=>$organism]) }}" method="get" target="_blank">
                 <h2>Search by Gene IDs</h2><br />
-                <label for="gene1"><b>Gene IDs</b></label><br />
+                <label for="gene1"><b>Gene IDs:</b></label><br />
                 <span style="font-size:10pt">
                     &nbsp;(eg
                     @foreach($gene_array as $gene)
@@ -32,7 +32,11 @@ $chromosome_array = $info['chromosome_array'];
                     @endforeach
                     )
                 </span><br />
-                <textarea id="gene1" name="gene1" rows="12" cols="40"></textarea>
+                <textarea id="gene1" name="gene1" rows="10" cols="40"></textarea>
+                <br /><br />
+                <label for="upstream_length_1"><b>Upstream length (bp):</b></label>
+                <span style="font-size:10pt">(eg 2000)</span>
+                <input type="text" id="upstream_length_1" name="upstream_length_1" size="40">
                 <br /><br />
                 <input type="submit" value="Search">
             </form>
@@ -40,7 +44,7 @@ $chromosome_array = $info['chromosome_array'];
         <td width="50%" align="center" valign="top" style="border:1px solid #999999; padding:10px; background-color:#f8f8f8; text-align:left;">
             <form action="{{ route('system.tools.GenVarX.viewPromotersByBindingTFs', ['organism'=>$organism]) }}" method="get" target="_blank">
                 <h2>Search by Binding TFs</h2><br />
-                <label for="bindingTF1"><b>Binding TFs</b></label><br />
+                <label for="bindingTF1"><b>Binding TFs:</b></label><br />
                 <span style="font-size:10pt">
                     &nbsp;(eg
                     @foreach($binding_TF_array as $binding_TF)
@@ -48,7 +52,7 @@ $chromosome_array = $info['chromosome_array'];
                     @endforeach
                     )
                 </span><br />
-                <textarea id="bindingTF1" name="bindingTF1" rows="10" cols="40"></textarea>
+                <textarea id="bindingTF1" name="bindingTF1" rows="8" cols="40"></textarea>
                 <br /><br />
                 <label for="chromosome1"><b>Gene Binding Chromosome:</b></label>
                 <select name="chromosome1" id="chromosome1">
@@ -58,6 +62,10 @@ $chromosome_array = $info['chromosome_array'];
                 }
                 @endphp
                 </select>
+                <br /><br />
+                <label for="upstream_length_1"><b>Upstream length (bp):</b></label>
+                <span style="font-size:10pt">(eg 2000)</span>
+                <input type="text" id="upstream_length_1" name="upstream_length_1" size="40">
                 <br /><br />
                 <input type="submit" value="Search">
             </form>
@@ -72,7 +80,7 @@ $chromosome_array = $info['chromosome_array'];
         <td width="50%" align="center" valign="top" style="border:1px solid #999999; padding:10px; background-color:#f8f8f8; text-align:left;">
             <form action="{{ route('system.tools.GenVarX.viewAllCNVByGenes', ['organism'=>$organism]) }}" method="get" target="_blank">
                 <h2>Search by Gene IDs</h2><br />
-                <label for="gene_id_2"><b>Gene IDs</b></label><br />
+                <label for="gene_id_2"><b>Gene IDs:</b></label><br />
                 <span style="font-size:10pt">
                     &nbsp;(eg
                     @foreach($gene_array as $gene)
