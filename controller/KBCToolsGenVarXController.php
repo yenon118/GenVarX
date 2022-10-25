@@ -135,6 +135,8 @@ class KBCToolsGenVarXController extends Controller
             $upstream_length = $upstream_length_1;
         } elseif (is_float($upstream_length_1)) {
             $upstream_length = intval($upstream_length_1);
+        } else {
+            $upstream_length = 2000;
         }
 
         // Table names
@@ -308,6 +310,8 @@ class KBCToolsGenVarXController extends Controller
             $upstream_length = $upstream_length_1;
         } elseif (is_float($upstream_length_1)) {
             $upstream_length = intval($upstream_length_1);
+        } else {
+            $upstream_length = 2000;
         }
 
         // Table names
