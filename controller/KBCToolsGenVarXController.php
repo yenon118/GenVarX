@@ -357,12 +357,12 @@ class KBCToolsGenVarXController extends Controller
             LEFT JOIN (
                 SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description, 
                 CASE Strand
-                    WHEN '+' THEN Start-1-" . $upstream_length_1 . "
+                    WHEN '+' THEN Start-1-" . $upstream_length . "
                     ELSE End+1
                 END AS Promoter_Start, 
                 CASE Strand
                     WHEN '+' THEN Start-1
-                    ELSE End+1+" . $upstream_length_1 . "
+                    ELSE End+1+" . $upstream_length . "
                 END AS Promoter_End 
                 FROM " . $db . "." . $table_name . " 
                 WHERE Chromosome = '" . $chromosome1 . "' 
