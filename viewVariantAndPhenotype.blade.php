@@ -77,7 +77,7 @@ $phenotype_selection_arr = $info['phenotype_selection_arr'];
         echo "<button onclick=\"queryPhenotypeDescription('" . $organism . "')\" style=\"margin-right:20px;\">Download Phenotype Description</button>";
     }
     @endphp
-    <button onclick="qeuryVariantAndPhenotype('{{$organism}}')" style="margin-right:20px;">View Data</button>
+    <button onclick="queryVariantAndPhenotype('{{$organism}}')" style="margin-right:20px;">View Data</button>
     <button onclick="downloadVariantAndPhenotype('{{$organism}}')" style="margin-right:20px;">Download Data</button>
     </div>
     <br/><br/>

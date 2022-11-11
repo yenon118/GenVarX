@@ -145,7 +145,7 @@ function queryPhenotypeDescription(organism) {
 }
 
 
-function qeuryVariantAndPhenotype(organism) {
+function queryVariantAndPhenotype(organism) {
 
     // Clear data appended to the div tags, if there is any
     if (document.getElementById('Variant_and_Phenotye_detail_table').innerHTML) {
@@ -175,7 +175,7 @@ function qeuryVariantAndPhenotype(organism) {
 
     if (chromosome_1 && position_1 && genotype_array.length > 0) {
         $.ajax({
-            url: 'qeuryVariantAndPhenotype/'+organism,
+            url: 'queryVariantAndPhenotype/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {
@@ -238,7 +238,7 @@ function downloadVariantAndPhenotype(organism) {
 
     if (chromosome_1 && position_1 && genotype_array.length > 0) {
         $.ajax({
-            url: 'qeuryVariantAndPhenotype/'+organism,
+            url: 'queryVariantAndPhenotype/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {

@@ -205,7 +205,7 @@ function queryPhenotypeDescription(organism) {
 }
 
 
-function qeuryCNVAndPhenotype(organism) {
+function queryCNVAndPhenotype(organism) {
 
     // Clear data appended to the div tags, if there is any
     if (document.getElementById('CNV_and_Phenotye_detail_table').innerHTML) {
@@ -238,7 +238,7 @@ function qeuryCNVAndPhenotype(organism) {
 
     if (chromosome_1 && position_start_1 && position_end_1 && cn_array.length > 0) {
         $.ajax({
-            url: 'qeuryCNVAndPhenotype/'+organism,
+            url: 'queryCNVAndPhenotype/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {
@@ -307,7 +307,7 @@ function downloadCNVAndPhenotype(organism) {
 
     if (chromosome_1 && position_start_1 && position_end_1 && cn_array.length > 0) {
         $.ajax({
-            url: 'qeuryCNVAndPhenotype/'+organism,
+            url: 'queryCNVAndPhenotype/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {

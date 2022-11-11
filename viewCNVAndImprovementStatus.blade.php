@@ -55,7 +55,7 @@ if($organism == "Osativa"){
 
     if (organism && chromosome && position_start && position_end && data_option) {
         $.ajax({
-            url: 'qeuryCNVAndImprovementStatus/'+organism,
+            url: 'queryCNVAndImprovementStatus/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {

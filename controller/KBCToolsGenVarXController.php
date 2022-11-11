@@ -555,7 +555,7 @@ class KBCToolsGenVarXController extends Controller
     }
 
 
-    public function QeuryVariantAndPhenotype(Request $request, $organism) {
+    public function QueryVariantAndPhenotype(Request $request, $organism) {
 
         // Database
         $db = "KBC_" . $organism;
@@ -624,10 +624,10 @@ class KBCToolsGenVarXController extends Controller
         $query_str = $query_str . "FROM " . $db . "." . $genotype_data_table_name . " AS G ";
         if (isset($phenotype_array) && is_array($phenotype_array) && !empty($phenotype_array)) {
             $query_str = $query_str . "LEFT JOIN " . $db . "." . $phenotype_table_name . " AS PH ";
-            $query_str = $query_str . "ON G.Accession = PH.Accession ";
+            $query_str = $query_str . "ON BINARY G.Accession = PH.Accession ";
         }
         $query_str = $query_str . "LEFT JOIN " . $db . "." . $accession_mapping_table_name . " AS AM ";
-        $query_str = $query_str . "ON G.Accession = AM.Accession ";
+        $query_str = $query_str . "ON BINARY G.Accession = AM.Accession ";
         $query_str = $query_str . "WHERE (G.Chromosome = '" . $chromosome . "') ";
         $query_str = $query_str . "AND (G.Position = " . $position . ") ";
         if (count($genotype_array) > 0) {
@@ -830,7 +830,7 @@ class KBCToolsGenVarXController extends Controller
     }
     
 
-    public function QeuryCNVAndPhenotype(Request $request, $organism) {
+    public function QueryCNVAndPhenotype(Request $request, $organism) {
 
         // Database
         $db = "KBC_" . $organism;
@@ -927,10 +927,10 @@ class KBCToolsGenVarXController extends Controller
         $query_str = $query_str . "FROM " . $db . "." . $cnv_table_name . " AS CNV ";
         if (isset($phenotype_array) && is_array($phenotype_array) && !empty($phenotype_array)) {
             $query_str = $query_str . "LEFT JOIN " . $db . "." . $phenotype_table_name . " AS G ";
-            $query_str = $query_str . "ON CNV.Accession = G.Accession ";
+            $query_str = $query_str . "ON BINARY CNV.Accession = G.Accession ";
         }
         $query_str = $query_str . "LEFT JOIN " . $db . "." . $accession_mapping_table_name . " AS AM ";
-        $query_str = $query_str . "ON CNV.Accession = AM.Accession ";
+        $query_str = $query_str . "ON BINARY CNV.Accession = AM.Accession ";
         $query_str = $query_str . "WHERE (CNV.Chromosome = '" . $chromosome . "') ";
         $query_str = $query_str . "AND (CNV.Start BETWEEN " . $position_start . " AND " . $position_end . ") ";
         $query_str = $query_str . "AND (CNV.End BETWEEN " . $position_start . " AND " . $position_end . ") ";
@@ -1018,7 +1018,7 @@ class KBCToolsGenVarXController extends Controller
         return view('system/tools/GenVarX/viewCNVAndImprovementStatus')->with('info', $info);
     }
 
-    public function QeuryCNVAndImprovementStatus(Request $request, $organism) {
+    public function QueryCNVAndImprovementStatus(Request $request, $organism) {
 
         // Database
         $db = "KBC_" . $organism;
@@ -1081,7 +1081,7 @@ class KBCToolsGenVarXController extends Controller
         $query_str = $query_str . "FROM " . $db . "." . $cnv_table_name . " ";
         $query_str = $query_str . "AS CNV ";
         $query_str = $query_str . "LEFT JOIN " . $db . "." . $accession_mapping_table_name . " AS AM ";
-        $query_str = $query_str . "ON CNV.Accession = AM.Accession ";
+        $query_str = $query_str . "ON BINARY CNV.Accession = AM.Accession ";
         $query_str = $query_str . "WHERE (CNV.Chromosome = '" . $chromosome . "') ";
         $query_str = $query_str . "AND (CNV.Start BETWEEN " . $position_start . " AND " . $position_end . ") ";
         $query_str = $query_str . "AND (CNV.End BETWEEN " . $position_start . " AND " . $position_end . ") ";
@@ -1186,7 +1186,7 @@ class KBCToolsGenVarXController extends Controller
         // Get CNV data
         $query_str = "SELECT CNV.Chromosome, CNV.Start, CNV.End, CNV.Width, CNV.Strand, CNV.Accession, CNV.CN ";
         $query_str = $query_str . "FROM " . $db . "." . $cnv_table_name . " AS CNV ";
-        $query_str = $query_str . "WHERE (CNV.Accession = '" . $accession . "') AND (CNV.CN IN ('";
+        $query_str = $query_str . "WHERE (CNV.Accession = BINARY '" . $accession . "') AND (CNV.CN IN ('";
         for ($i = 0; $i < count($copy_number_arr); $i++) {
             if($i < (count($copy_number_arr)-1)){
                 $query_str = $query_str . trim($copy_number_arr[$i]) . "', '";

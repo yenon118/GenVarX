@@ -72,7 +72,7 @@ $phenotype = $info['phenotype'];
 
     if (organism && chromosome && position && phenotype && genotype_array.length > 0) {
         $.ajax({
-            url: 'qeuryVariantAndPhenotypeFigures/'+organism,
+            url: 'queryVariantAndPhenotypeFigures/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {

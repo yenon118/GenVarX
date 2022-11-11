@@ -87,7 +87,7 @@ $phenotype = $info['phenotype'];
 
     if (organism && chromosome && position_start && position_end && cnv_data_option && phenotype && cn_array.length > 0) {
         $.ajax({
-            url: 'qeuryCNVAndPhenotypeFigures/'+organism,
+            url: 'queryCNVAndPhenotypeFigures/'+organism,
             type: 'GET',
             contentType: 'application/json',
             data: {
