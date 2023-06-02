@@ -201,6 +201,7 @@ function summarizeQueriedData(jsonObject, phenotype, selectedKey){
         for (let i = 0; i < selectedKeyArray.length; i++) {
             for (let j = 0; j < phenotypePercentColumnArray.length; j++) {
                 summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] =  100 * summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] / totalNumberOfPhenotypes;
+                // summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] =  100 * summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] / summaryObject[selectedKeyArray[i]]["Number_of_Accession_with_Phenotype"];
                 if (summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] > 0) {
                     summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] = Math.round(summaryObject[selectedKeyArray[i]][phenotypePercentColumnArray[j]] * 100) / 100;
                 }
