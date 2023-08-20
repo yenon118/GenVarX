@@ -56,7 +56,7 @@ class KBCToolsGenVarXController extends Controller
                 $sql = $sql . "WHERE M.Gene LIKE 'GRMZ%' ";
             }
             $sql = $sql . "LIMIT 3;";
-            
+
             $gene_array = DB::connection($db)->select($sql);
 
             // Query binding TF from database
@@ -66,12 +66,12 @@ class KBCToolsGenVarXController extends Controller
                 $sql = $sql . "WHERE Motif LIKE 'GRMZ%' ";
             }
             $sql = $sql . "LIMIT 3;";
-            
+
             $binding_tf_array = DB::connection($db)->select($sql);
 
             // Query binding TF from database
             $sql = "SELECT DISTINCT Chromosome FROM " . $db . "." . $gff_table_name . " ORDER BY Chromosome; ";
-            
+
             $chromosome_array = DB::connection($db)->select($sql);
         }
 
@@ -184,45 +184,80 @@ class KBCToolsGenVarXController extends Controller
 
         // Get motifs
         for ($i = 0; $i < count($result_arr); $i++) {
-            
+
+            // Get binding TF
+            // $query_str = "
+            // SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family,
+            // MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(GD.Position SEPARATOR ', ') AS Variant_Positions FROM (
+            //     SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " WHERE Gene = '" . $result_arr[$i]->Name . "'
+            // ) AS M
+            // INNER JOIN (
+            //     SELECT Chromosome, Start, End, Strand, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence
+            //     WHERE (Chromosome = '" . $result_arr[$i]->Chromosome . "')
+            //     AND ((Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
+            // ) AS MS
+            // ON M.Motif = MS.Name
+            // LEFT JOIN " . $db . "." . $tf_table_name . " AS TF ON MS.Name = TF.TF
+            // LEFT JOIN (
+            //     SELECT DISTINCT Position FROM " . $db . "." . $genotype_data_table_name . $result_arr[$i]->Chromosome . "_genotype_data
+            //     WHERE (Position BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . ")
+            // ) AS GD
+            // ON (GD.Position BETWEEN MS.Start AND MS.End)
+            // GROUP BY M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, Binding_TF, TF.TF_Family, Gene_Binding_Sequence
+            // ORDER BY Start, End;
+            // ";
+
+            // Get binding TF (Optimized MySQL query string)
             $query_str = "
-            SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family, MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(GD.Position SEPARATOR ', ') AS Variant_Positions FROM (
-                SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " WHERE Gene = '" . $result_arr[$i]->Name . "'
-            ) AS M
-            INNER JOIN (
-                SELECT Chromosome, Start, End, Strand, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence 
-                WHERE (Chromosome = '" . $result_arr[$i]->Chromosome . "') 
-                AND ((Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
-            ) AS MS
+            SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family,
+            MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(DISTINCT GD.Position SEPARATOR ', ') AS Variant_Positions
+            FROM " . $db . "." . $motif_table_name . " AS M
+            INNER JOIN " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence AS MS
             ON M.Motif = MS.Name
-            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF ON MS.Name = TF.TF 
-            LEFT JOIN ( 
-                SELECT DISTINCT Position FROM " . $db . "." . $genotype_data_table_name . $result_arr[$i]->Chromosome . "_genotype_data 
-                WHERE (Position BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . ") 
-            ) AS GD 
-            ON (GD.Position BETWEEN MS.Start AND MS.End) 
-            GROUP BY M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, Binding_TF, TF.TF_Family, Gene_Binding_Sequence 
+            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF ON MS.Name = TF.TF
+            LEFT JOIN (
+                SELECT DISTINCT Position FROM " . $db . "." . $genotype_data_table_name . $result_arr[$i]->Chromosome . "_genotype_data
+                WHERE (Position BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . ")
+            ) AS GD
+            ON (GD.Position BETWEEN MS.Start AND MS.End)
+            WHERE (M.Gene = '" . $result_arr[$i]->Name . "') AND (MS.Chromosome = '" . $result_arr[$i]->Chromosome . "') AND ((MS.Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (MS.End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
+            GROUP BY M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, Binding_TF, TF.TF_Family, Gene_Binding_Sequence
             ORDER BY Start, End;
             ";
 
+            // Get binding TF
+            // $query_str2 = "
+            // SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family, MS.Sequence AS Gene_Binding_Sequence FROM (
+            //     SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " WHERE Gene = '" . $result_arr[$i]->Name . "'
+            // ) AS M
+            // INNER JOIN (
+            //     SELECT Chromosome, Start, End, Strand, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence
+            //     WHERE (Chromosome = '" . $result_arr[$i]->Chromosome . "')
+            //     AND ((Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
+            // ) AS MS
+            // ON M.Motif = MS.Name
+            // LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+            // ON MS.Name = TF.TF
+            // ORDER BY Start, End;
+            // ";
+
+            // Get binding TF (Optimized MySQL query string)
             $query_str2 = "
-            SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family, MS.Sequence AS Gene_Binding_Sequence FROM (
-                SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " WHERE Gene = '" . $result_arr[$i]->Name . "'
-            ) AS M
-            INNER JOIN (
-                SELECT Chromosome, Start, End, Strand, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence 
-                WHERE (Chromosome = '" . $result_arr[$i]->Chromosome . "') 
-                AND ((Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
-            ) AS MS
+            SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family, MS.Sequence AS Gene_Binding_Sequence
+            FROM " . $db . "." . $motif_table_name . " AS M
+            INNER JOIN " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence AS MS
             ON M.Motif = MS.Name
-            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF ON MS.Name = TF.TF
+            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+            ON MS.Name = TF.TF
+            WHERE (M.Gene = '" . $result_arr[$i]->Name . "') AND (MS.Chromosome = '" . $result_arr[$i]->Chromosome . "')
+            AND ((MS.Start BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . " ) OR (MS.End BETWEEN " . $result_arr[$i]->Promoter_Start . " AND " . $result_arr[$i]->Promoter_End . "))
             ORDER BY Start, End;
             ";
 
             try {
-                $motif_result_arr = DB::connection($db)->select($query_str); 
+                $motif_result_arr = DB::connection($db)->select($query_str);
             } catch (\Exception $e) {
-                $motif_result_arr = DB::connection($db)->select($query_str2); 
+                $motif_result_arr = DB::connection($db)->select($query_str2);
             }
 
             $result_arr[$i]->Motif_Data = $motif_result_arr;
@@ -339,36 +374,65 @@ class KBCToolsGenVarXController extends Controller
         $result_arr = array();
         for ($i = 0; $i < count($binding_tf_arr); $i++) {
 
+            // Get binding TF
+            // $query_str = "
+            // SELECT M.Motif AS Binding_TF, TF.TF_Family,
+            // MS.Chromosome AS Binding_Chromosome, MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence,
+            // M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand, GFF.Gene_Description
+            // FROM (
+            //     SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . "
+            //     WHERE Motif = '" . $binding_tf_arr[$i] . "'
+            // ) AS M
+            // LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+            // ON M.Motif = TF.TF
+            // LEFT JOIN (
+            //     SELECT Chromosome, Start, End, ID, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . "
+            //     WHERE Name = '" . $binding_tf_arr[$i] . "'
+            // ) AS MS
+            // ON M.Motif = MS.Name
+            // LEFT JOIN (
+            //     SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description,
+            //     CASE Strand
+            //         WHEN '+' THEN Start-1-" . $upstream_length . "
+            //         ELSE End+1
+            //     END AS Promoter_Start,
+            //     CASE Strand
+            //         WHEN '+' THEN Start-1
+            //         ELSE End+1+" . $upstream_length . "
+            //     END AS Promoter_End
+            //     FROM " . $db . "." . $table_name . "
+            //     WHERE Chromosome = '" . $chromosome1 . "'
+            // ) AS GFF
+            // ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End))
+            // WHERE ((GFF.Chromosome = '" . $chromosome1 . "') AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End))
+            // ORDER BY MS.Chromosome, MS.Start, MS.End;
+            // ";
+
+            // Get binding TF (Optimized MySQL query string)
             $query_str = "
-            SELECT M.Motif AS Binding_TF, TF.TF_Family, 
-            MS.Chromosome AS Binding_Chromosome, MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence, 
+            SELECT M.Motif AS Binding_TF, TF.TF_Family,
+            MS.Chromosome AS Binding_Chromosome, MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence,
             M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand, GFF.Gene_Description
-            FROM (
-                SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " 
-                WHERE Motif = '" . $binding_tf_arr[$i] . "'
-            ) AS M 
-            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF 
-            ON M.Motif = TF.TF 
+            FROM " . $db . "." . $motif_table_name . " AS M
+            LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+            ON M.Motif = TF.TF
+            LEFT JOIN " . $db . "." . $motif_sequence_table_name . " AS MS
+            ON M.Motif = MS.Name
             LEFT JOIN (
-                SELECT Chromosome, Start, End, ID, Name, Sequence FROM " . $db . "." . $motif_sequence_table_name . "
-                WHERE Name = '" . $binding_tf_arr[$i] . "' 
-            ) AS MS 
-            ON M.Motif = MS.Name 
-            LEFT JOIN (
-                SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description, 
+                SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description,
                 CASE Strand
                     WHEN '+' THEN Start-1-" . $upstream_length . "
                     ELSE End+1
-                END AS Promoter_Start, 
+                END AS Promoter_Start,
                 CASE Strand
                     WHEN '+' THEN Start-1
                     ELSE End+1+" . $upstream_length . "
-                END AS Promoter_End 
-                FROM " . $db . "." . $table_name . " 
-                WHERE Chromosome = '" . $chromosome1 . "' 
-            ) AS GFF 
-            ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End)) 
-            WHERE ((GFF.Chromosome = '" . $chromosome1 . "') AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End)) 
+                END AS Promoter_End
+                FROM " . $db . "." . $table_name . "
+                WHERE Chromosome = '" . $chromosome1 . "'
+            ) AS GFF
+            ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End))
+            WHERE (MS.Chromosome = '" . $chromosome1 . "') AND (GFF.Chromosome = '" . $chromosome1 . "') AND (M.Motif = '" . $binding_tf_arr[$i] . "') AND (MS.Name = '" . $binding_tf_arr[$i] . "')
             ORDER BY MS.Chromosome, MS.Start, MS.End;
             ";
 
@@ -428,36 +492,79 @@ class KBCToolsGenVarXController extends Controller
         }
 
         $query_str = "
-        SELECT M.Motif AS Binding_TF, TF.TF_Family, 
-        MS.Chromosome AS Binding_Chromosome, MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence, 
-        M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand, GFF.Gene_Description
+        SELECT M.Motif AS Binding_TF, TF.TF_Family, MS.Chromosome AS Binding_Chromosome,
+        MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence,
+        M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand,
+        GFF.Gene_Description, GROUP_CONCAT(DISTINCT GD.Position SEPARATOR ', ') AS Variant_Position
         FROM (
-            SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " 
-            WHERE Motif = '" . $motif . "' AND Gene = '" . $gene . "' 
-        ) AS M 
-        LEFT JOIN " . $db . "." . $tf_table_name . " AS TF 
-        ON M.Motif = TF.TF 
-        LEFT JOIN " . $db . "." . $motif_sequence_table_name . " AS MS 
-        ON M.Motif = MS.Name 
+            SELECT Motif, Gene
+            FROM " . $db . "." . $motif_table_name . "
+            WHERE Motif = '" . $motif . "' AND Gene = '" . $gene . "'
+        ) AS M
+        LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+        ON M.Motif = TF.TF
+        LEFT JOIN " . $db . "." . $motif_sequence_table_name . " AS MS
+        ON M.Motif = MS.Name
         LEFT JOIN (
-            SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description, 
+            SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description,
             CASE Strand
                 WHEN '+' THEN Start-1-" . $upstream_length_1 . "
                 ELSE End+1
-            END AS Promoter_Start, 
+            END AS Promoter_Start,
             CASE Strand
                 WHEN '+' THEN Start-1
                 ELSE End+1+" . $upstream_length_1 . "
-            END AS Promoter_End 
-            FROM " . $db . "." . $table_name . " 
-            WHERE Chromosome = '" . $chromosome . "' 
-        ) AS GFF 
-        ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End)) 
-        WHERE ((GFF.Chromosome = '" . $chromosome . "') AND (MS.Start = " . $motif_start . ") AND (MS.End = " . $motif_end . ")) 
-        ORDER BY MS.Chromosome, MS.Start, MS.End;
+            END AS Promoter_End
+            FROM " . $db . "." . $table_name . "
+            WHERE Chromosome = '" . $chromosome . "'
+        ) AS GFF
+        ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End))
+        LEFT JOIN " . $db . "." . $genotype_data_table_name . " AS GD
+        ON ((MS.Chromosome = GD.Chromosome) AND (GD.Position BETWEEN MS.Start AND MS.End))
+        WHERE ((GFF.Chromosome = '" . $chromosome . "') AND (MS.Start = " . $motif_start . ") AND (MS.End = " . $motif_end . "))
+        GROUP BY M.Motif, TF.TF_Family, MS.Chromosome, MS.Start, MS.End, MS.Sequence, M.Gene, GFF.Chromosome, GFF.Start, GFF.End, GFF.Strand, GFF.Gene_Description
+        ORDER BY MS.Chromosome, MS.Start, MS.End
+        LIMIT 1;
         ";
 
-        $binding_tf_result_arr = DB::connection($db)->select($query_str);
+        $query_str2 = "
+        SELECT M.Motif AS Binding_TF, TF.TF_Family, MS.Chromosome AS Binding_Chromosome,
+        MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence,
+        M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand,
+        GFF.Gene_Description
+        FROM (
+            SELECT Motif, Gene
+            FROM " . $db . "." . $motif_table_name . "
+            WHERE Motif = '" . $motif . "' AND Gene = '" . $gene . "'
+        ) AS M
+        LEFT JOIN " . $db . "." . $tf_table_name . " AS TF
+        ON M.Motif = TF.TF
+        LEFT JOIN " . $db . "." . $motif_sequence_table_name . " AS MS
+        ON M.Motif = MS.Name
+        LEFT JOIN (
+            SELECT ID, Name, Chromosome, Start, End, Strand, Gene_Description,
+            CASE Strand
+                WHEN '+' THEN Start-1-" . $upstream_length_1 . "
+                ELSE End+1
+            END AS Promoter_Start,
+            CASE Strand
+                WHEN '+' THEN Start-1
+                ELSE End+1+" . $upstream_length_1 . "
+            END AS Promoter_End
+            FROM " . $db . "." . $table_name . "
+            WHERE Chromosome = '" . $chromosome . "'
+        ) AS GFF
+        ON ((M.Gene = GFF.ID) AND (MS.Chromosome = GFF.Chromosome) AND (MS.Start BETWEEN GFF.Promoter_Start AND GFF.Promoter_End))
+        WHERE ((GFF.Chromosome = '" . $chromosome . "') AND (MS.Start = " . $motif_start . ") AND (MS.End = " . $motif_end . "))
+        ORDER BY MS.Chromosome, MS.Start, MS.End
+        LIMIT 1;
+        ";
+
+        try {
+            $binding_tf_result_arr = DB::connection($db)->select($query_str);
+        } catch (\Exception $e) {
+            $binding_tf_result_arr = DB::connection($db)->select($query_str2);
+        }
 
         $query_str = "SELECT * ";
         $query_str = $query_str . "FROM " . $db . "." . $genotype_count_table_name . " ";
@@ -468,7 +575,7 @@ class KBCToolsGenVarXController extends Controller
         try {
             $genotype_count_result_arr = DB::connection($db)->select($query_str);
         } catch (\Exception $e) {
-            $genotype_count_result_arr = array(); 
+            $genotype_count_result_arr = array();
         }
 
         // Package variables that need to go to the view
@@ -511,12 +618,15 @@ class KBCToolsGenVarXController extends Controller
 
         // Table names
         if ($organism == "Osativa") {
+            $genotype_data_table_name = "mViz_Rice_" . $chromosome . "_genotype_data";
             $genotype_count_table_name = "mViz_Rice_". $chromosome . "_genotype_count";
             $phenotype_selection_table_name = "mViz_Rice_Phenotype_Selection";
         } elseif ($organism == "Athaliana") {
+            $genotype_data_table_name = "mViz_Arabidopsis_" . $chromosome . "_genotype_data";
             $genotype_count_table_name = "mViz_Arabidopsis_". $chromosome . "_genotype_count";
             $phenotype_selection_table_name = "mViz_Arabidopsis_Phenotype_Selection";
         } elseif ($organism == "Zmays") {
+            $genotype_data_table_name = "mViz_Maize_" . $chromosome . "_genotype_data";
             $genotype_count_table_name = "mViz_Maize_". $chromosome . "_genotype_count";
             $phenotype_selection_table_name = "mViz_Maize_Phenotype_Selection";
         }
@@ -531,11 +641,9 @@ class KBCToolsGenVarXController extends Controller
         }
 
         $query_str = "
-            SELECT * 
-            FROM " . $db . "." . $genotype_count_table_name . " 
-            WHERE ((Chromosome = '" . $chromosome . "') 
-            AND (Position = " . $position . ")) 
-            ORDER BY Chromosome, Position; 
+            SELECT DISTINCT G.Genotype
+            FROM " . $db . "." . $genotype_data_table_name . " AS G
+            WHERE ((G.Chromosome = '" . $chromosome . "') AND (G.Position = " . $position . "));
         ";
 
         $genotype_selection_arr = DB::connection($db)->select($query_str);
@@ -576,7 +684,7 @@ class KBCToolsGenVarXController extends Controller
                 $genotype_array[$i] = trim($genotype_array[$i]);
             }
         }
-        
+
         if (is_string($phenotype)) {
             $phenotype_array = preg_split("/[;, \n]+/", $phenotype);
             for ($i = 0; $i < count($phenotype_array); $i++) {
@@ -642,7 +750,7 @@ class KBCToolsGenVarXController extends Controller
             $query_str = $query_str . "')) ";
         }
         $query_str = $query_str . "ORDER BY G.Chromosome, G.Position, G.Genotype;";
-    
+
         $result_arr = DB::connection($db)->select($query_str);
 
         return json_encode($result_arr);
@@ -828,7 +936,7 @@ class KBCToolsGenVarXController extends Controller
 
         return json_encode($result_arr);
     }
-    
+
 
     public function QueryCNVAndPhenotype(Request $request, $organism) {
 
@@ -979,7 +1087,7 @@ class KBCToolsGenVarXController extends Controller
         } catch (\Exception $e) {
             $phenotype_selection_arr = array();
         }
-        
+
 
         // Package variables that need to go to the view
         $info = [
@@ -1135,7 +1243,7 @@ class KBCToolsGenVarXController extends Controller
         // Return to view
         return view('system/tools/GenVarX/viewCNVAndPhenotypeFigures')->with('info', $info);
     }
-    
+
 
     public function ViewAllCNVByAccessionAndCopyNumbersPage(Request $request, $organism) {
 
