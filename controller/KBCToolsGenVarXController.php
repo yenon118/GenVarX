@@ -560,11 +560,7 @@ class KBCToolsGenVarXController extends Controller
         LIMIT 1;
         ";
 
-        try {
-            $binding_tf_result_arr = DB::connection($db)->select($query_str);
-        } catch (\Exception $e) {
-            $binding_tf_result_arr = DB::connection($db)->select($query_str2);
-        }
+        $binding_tf_result_arr = DB::connection($db)->select($query_str2);
 
         $query_str = "SELECT * ";
         $query_str = $query_str . "FROM " . $db . "." . $genotype_count_table_name . " ";
@@ -722,7 +718,7 @@ class KBCToolsGenVarXController extends Controller
             $query_str = $query_str . "AM.Improvement_Status, ";
         }
         $query_str = $query_str . "G.Genotype, ";
-        $query_str = $query_str . "CASE G.Functional_Effect WHEN 'Ref' THEN 'Ref' ELSE 'Alt' END AS Category, ";
+        $query_str = $query_str . "G.Category, ";
         $query_str = $query_str . "G.Imputation ";
         if (isset($phenotype_array) && is_array($phenotype_array) && !empty($phenotype_array)) {
             for ($i = 0; $i < count($phenotype_array); $i++) {
