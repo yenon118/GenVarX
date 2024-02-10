@@ -188,7 +188,7 @@ class KBCToolsGenVarXController extends Controller
             // Get binding TF
             // $query_str = "
             // SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family,
-            // MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(GD.Position SEPARATOR ', ') AS Variant_Positions FROM (
+            // MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(GD.Position ORDER BY GD.Position ASC SEPARATOR ', ') AS Variant_Positions FROM (
             //     SELECT Motif, Gene FROM " . $db . "." . $motif_table_name . " WHERE Gene = '" . $result_arr[$i]->Name . "'
             // ) AS M
             // INNER JOIN (
@@ -210,7 +210,7 @@ class KBCToolsGenVarXController extends Controller
             // Get binding TF (Optimized MySQL query string)
             $query_str = "
             SELECT M.Gene, MS.Chromosome, MS.Start, MS.End, MS.Strand, MS.Name AS Binding_TF, TF.TF_Family,
-            MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(DISTINCT GD.Position SEPARATOR ', ') AS Variant_Positions
+            MS.Sequence AS Gene_Binding_Sequence, GROUP_CONCAT(DISTINCT GD.Position ORDER BY GD.Position ASC SEPARATOR ', ') AS Variant_Positions
             FROM " . $db . "." . $motif_table_name . " AS M
             INNER JOIN " . $db . "." . $motif_sequence_table_name . $result_arr[$i]->Chromosome. "_Motif_Sequence AS MS
             ON M.Motif = MS.Name
@@ -495,7 +495,7 @@ class KBCToolsGenVarXController extends Controller
         SELECT M.Motif AS Binding_TF, TF.TF_Family, MS.Chromosome AS Binding_Chromosome,
         MS.Start AS Binding_Start, MS.End AS Binding_End, MS.Sequence AS Gene_Binding_Sequence,
         M.Gene, GFF.Chromosome, GFF.Start AS Gene_Start, GFF.End AS Gene_End, GFF.Strand AS Gene_Strand,
-        GFF.Gene_Description, GROUP_CONCAT(DISTINCT GD.Position SEPARATOR ', ') AS Variant_Position
+        GFF.Gene_Description, GROUP_CONCAT(DISTINCT GD.Position ORDER BY GD.Position ASC SEPARATOR ', ') AS Variant_Position
         FROM (
             SELECT Motif, Gene
             FROM " . $db . "." . $motif_table_name . "
