@@ -117,14 +117,21 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert gene1 string to array
         if (is_string($gene1)) {
-            $gene_arr = preg_split("/[;, \n]+/", $gene1);
-            for ($i = 0; $i < count($gene_arr); $i++) {
-                $gene_arr[$i] = trim($gene_arr[$i]);
+            $gene1 = trim($gene1);
+            $temp_gene_arr = preg_split("/[;, \n]+/", $gene1);
+            $gene_arr = array();
+            for ($i = 0; $i < count($temp_gene_arr); $i++) {
+                if (!empty(trim($temp_gene_arr[$i]))) {
+                    array_push($gene_arr, trim($temp_gene_arr[$i]));
+                }
             }
         } elseif (is_array($gene1)) {
-            $gene_arr = $gene1;
-            for ($i = 0; $i < count($gene_arr); $i++) {
-                $gene_arr[$i] = trim($gene_arr[$i]);
+            $temp_gene_arr = $gene1;
+            $gene_arr = array();
+            for ($i = 0; $i < count($temp_gene_arr); $i++) {
+                if (!empty(trim($temp_gene_arr[$i]))) {
+                    array_push($gene_arr, trim($temp_gene_arr[$i]));
+                }
             }
         }
 
@@ -327,14 +334,21 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert bindingTF1 string to array
         if (is_string($bindingTF1)) {
-            $binding_tf_arr = preg_split("/[;, \n]+/", $bindingTF1);
-            for ($i = 0; $i < count($binding_tf_arr); $i++) {
-                $binding_tf_arr[$i] = trim($binding_tf_arr[$i]);
+            $bindingTF1 = trim($bindingTF1);
+            $temp_binding_tf_arr = preg_split("/[;, \n]+/", $bindingTF1);
+            $binding_tf_arr = array();
+            for ($i = 0; $i < count($temp_binding_tf_arr); $i++) {
+                if (!empty(trim($temp_binding_tf_arr[$i]))) {
+                    array_push($binding_tf_arr, trim($temp_binding_tf_arr[$i]));
+                }
             }
         } elseif (is_array($bindingTF1)) {
-            $binding_tf_arr = $bindingTF1;
-            for ($i = 0; $i < count($binding_tf_arr); $i++) {
-                $binding_tf_arr[$i] = trim($binding_tf_arr[$i]);
+            $temp_binding_tf_arr = $bindingTF1;
+            $binding_tf_arr = array();
+            for ($i = 0; $i < count($temp_binding_tf_arr); $i++) {
+                if (!empty(trim($temp_binding_tf_arr[$i]))) {
+                    array_push($binding_tf_arr, trim($temp_binding_tf_arr[$i]));
+                }
             }
         }
 
@@ -670,26 +684,40 @@ class KBCToolsGenVarXController extends Controller
         $phenotype = $request->Phenotype;
 
         if (is_string($genotype)) {
-            $genotype_array = preg_split("/[;, \n]+/", $genotype);
-            for ($i = 0; $i < count($genotype_array); $i++) {
-                $genotype_array[$i] = trim($genotype_array[$i]);
+            $genotype = trim($genotype);
+            $temp_genotype_array = preg_split("/[;, \n]+/", $genotype);
+            $genotype_array = array();
+            for ($i = 0; $i < count($temp_genotype_array); $i++) {
+                if (!empty(trim($temp_genotype_array[$i]))) {
+                    array_push($genotype_array, trim($temp_genotype_array[$i]));
+                }
             }
         } elseif (is_array($genotype)) {
-            $genotype_array = $genotype;
-            for ($i = 0; $i < count($genotype_array); $i++) {
-                $genotype_array[$i] = trim($genotype_array[$i]);
+            $temp_genotype_array = $genotype;
+            $genotype_array = array();
+            for ($i = 0; $i < count($temp_genotype_array); $i++) {
+                if (!empty(trim($temp_genotype_array[$i]))) {
+                    array_push($genotype_array, trim($temp_genotype_array[$i]));
+                }
             }
         }
 
         if (is_string($phenotype)) {
-            $phenotype_array = preg_split("/[;, \n]+/", $phenotype);
-            for ($i = 0; $i < count($phenotype_array); $i++) {
-                $phenotype_array[$i] = trim($phenotype_array[$i]);
+            $phenotype = trim($phenotype);
+            $temp_phenotype_array = preg_split("/[;, \n]+/", $phenotype);
+            $phenotype_array = array();
+            for ($i = 0; $i < count($temp_phenotype_array); $i++) {
+                if (!empty(trim($temp_phenotype_array[$i]))) {
+                    array_push($phenotype_array, trim($temp_phenotype_array[$i]));
+                }
             }
         } elseif (is_array($phenotype)) {
-            $phenotype_array = $phenotype;
-            for ($i = 0; $i < count($phenotype_array); $i++) {
-                $phenotype_array[$i] = trim($phenotype_array[$i]);
+            $temp_phenotype_array = $phenotype;
+            $phenotype_array = array();
+            for ($i = 0; $i < count($temp_phenotype_array); $i++) {
+                if (!empty(trim($temp_phenotype_array[$i]))) {
+                    array_push($phenotype_array, trim($temp_phenotype_array[$i]));
+                }
             }
         }
 
@@ -763,14 +791,21 @@ class KBCToolsGenVarXController extends Controller
         $phenotype = $request->phenotype_1;
 
         if (is_string($genotype)) {
-            $genotype_array = preg_split("/[;, \n]+/", $genotype);
-            for ($i = 0; $i < count($genotype_array); $i++) {
-                $genotype_array[$i] = trim($genotype_array[$i]);
+            $genotype = trim($genotype);
+            $temp_genotype_array = preg_split("/[;, \n]+/", $genotype);
+            $genotype_array = array();
+            for ($i = 0; $i < count($temp_genotype_array); $i++) {
+                if (!empty(trim($temp_genotype_array[$i]))) {
+                    array_push($genotype_array, trim($temp_genotype_array[$i]));
+                }
             }
         } elseif (is_array($genotype)) {
-            $genotype_array = $genotype;
-            for ($i = 0; $i < count($genotype_array); $i++) {
-                $genotype_array[$i] = trim($genotype_array[$i]);
+            $temp_genotype_array = $genotype;
+            $genotype_array = array();
+            for ($i = 0; $i < count($temp_genotype_array); $i++) {
+                if (!empty(trim($temp_genotype_array[$i]))) {
+                    array_push($genotype_array, trim($temp_genotype_array[$i]));
+                }
             }
         }
 
@@ -798,14 +833,21 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert gene_id_2 string to array
         if (is_string($gene_id_2)) {
-            $gene_arr = preg_split("/[;, \n]+/", $gene_id_2);
-            for ($i = 0; $i < count($gene_arr); $i++) {
-                $gene_arr[$i] = trim($gene_arr[$i]);
+            $gene_id_2 = trim($gene_id_2);
+            $temp_gene_arr = preg_split("/[;, \n]+/", $gene_id_2);
+            $gene_arr = array();
+            for ($i = 0; $i < count($temp_gene_arr); $i++) {
+                if (!empty(trim($temp_gene_arr[$i]))) {
+                    array_push($gene_arr, trim($temp_gene_arr[$i]));
+                }
             }
         } elseif (is_array($gene_id_2)) {
-            $gene_arr = $gene_id_2;
-            for ($i = 0; $i < count($gene_arr); $i++) {
-                $gene_arr[$i] = trim($gene_arr[$i]);
+            $temp_gene_arr = $gene_id_2;
+            $gene_arr = array();
+            for ($i = 0; $i < count($temp_gene_arr); $i++) {
+                if (!empty(trim($temp_gene_arr[$i]))) {
+                    array_push($gene_arr, trim($temp_gene_arr[$i]));
+                }
             }
         }
 
@@ -948,27 +990,41 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert copy number string to array
         if (is_string($cn)) {
-            $cn_array = preg_split("/[;, \n]+/", $cn);
-            for ($i = 0; $i < count($cn_array); $i++) {
-                $cn_array[$i] = trim($cn_array[$i]);
+            $cn = trim($cn);
+            $temp_cn_array = preg_split("/[;, \n]+/", $cn);
+            $cn_array = array();
+            for ($i = 0; $i < count($temp_cn_array); $i++) {
+                if (!empty(trim($temp_cn_array[$i]))) {
+                    array_push($cn_array, trim($temp_cn_array[$i]));
+                }
             }
         } elseif (is_array($cn)) {
-            $cn_array = $cn;
-            for ($i = 0; $i < count($cn_array); $i++) {
-                $cn_array[$i] = trim($cn_array[$i]);
+            $temp_cn_array = $cn;
+            $cn_array = array();
+            for ($i = 0; $i < count($temp_cn_array); $i++) {
+                if (!empty(trim($temp_cn_array[$i]))) {
+                    array_push($cn_array, trim($temp_cn_array[$i]));
+                }
             }
         }
 
         // Convert phenotype string to array
         if (is_string($phenotype)) {
-            $phenotype_array = preg_split("/[;, \n]+/", $phenotype);
-            for ($i = 0; $i < count($phenotype_array); $i++) {
-                $phenotype_array[$i] = trim($phenotype_array[$i]);
+            $phenotype = trim($phenotype);
+            $temp_phenotype_array = preg_split("/[;, \n]+/", $phenotype);
+            $phenotype_array = array();
+            for ($i = 0; $i < count($temp_phenotype_array); $i++) {
+                if (!empty(trim($temp_phenotype_array[$i]))) {
+                    array_push($phenotype_array, trim($temp_phenotype_array[$i]));
+                }
             }
         } elseif (is_array($phenotype)) {
-            $phenotype_array = $phenotype;
-            for ($i = 0; $i < count($phenotype_array); $i++) {
-                $phenotype_array[$i] = trim($phenotype_array[$i]);
+            $temp_phenotype_array = $phenotype;
+            $phenotype_array = array();
+            for ($i = 0; $i < count($temp_phenotype_array); $i++) {
+                if (!empty(trim($temp_phenotype_array[$i]))) {
+                    array_push($phenotype_array, trim($temp_phenotype_array[$i]));
+                }
             }
         }
 
@@ -1212,14 +1268,21 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert copy number string to array
         if (is_string($cn)) {
-            $cn_array = preg_split("/[;, \n]+/", $cn);
-            for ($i = 0; $i < count($cn_array); $i++) {
-                $cn_array[$i] = trim($cn_array[$i]);
+            $cn = trim($cn);
+            $temp_cn_array = preg_split("/[;, \n]+/", $cn);
+            $cn_array = array();
+            for ($i = 0; $i < count($temp_cn_array); $i++) {
+                if (!empty(trim($temp_cn_array[$i]))) {
+                    array_push($cn_array, trim($temp_cn_array[$i]));
+                }
             }
         } elseif (is_array($cn)) {
-            $cn_array = $cn;
-            for ($i = 0; $i < count($cn_array); $i++) {
-                $cn_array[$i] = trim($cn_array[$i]);
+            $temp_cn_array = $cn;
+            $cn_array = array();
+            for ($i = 0; $i < count($temp_cn_array); $i++) {
+                if (!empty(trim($temp_cn_array[$i]))) {
+                    array_push($cn_array, trim($temp_cn_array[$i]));
+                }
             }
         }
 
@@ -1252,14 +1315,21 @@ class KBCToolsGenVarXController extends Controller
 
         // Convert copy number string to array
         if (is_string($copy_number_2)) {
-            $copy_number_arr = preg_split("/[;, \n]+/", $copy_number_2);
-            for ($i = 0; $i < count($copy_number_arr); $i++) {
-                $copy_number_arr[$i] = trim($copy_number_arr[$i]);
+            $copy_number_2 = trim($copy_number_2);
+            $temp_copy_number_arr = preg_split("/[;, \n]+/", $copy_number_2);
+            $copy_number_arr = array();
+            for ($i = 0; $i < count($temp_copy_number_arr); $i++) {
+                if (!empty(trim($temp_copy_number_arr[$i]))) {
+                    array_push($copy_number_arr, trim($temp_copy_number_arr[$i]));
+                }
             }
         } elseif (is_array($copy_number_2)) {
-            $copy_number_arr = $copy_number_2;
-            for ($i = 0; $i < count($copy_number_arr); $i++) {
-                $copy_number_arr[$i] = trim($copy_number_arr[$i]);
+            $temp_copy_number_arr = $copy_number_2;
+            $copy_number_arr = array();
+            for ($i = 0; $i < count($temp_copy_number_arr); $i++) {
+                if (!empty(trim($temp_copy_number_arr[$i]))) {
+                    array_push($copy_number_arr, trim($temp_copy_number_arr[$i]));
+                }
             }
         }
 
