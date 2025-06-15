@@ -1,3 +1,4 @@
+
 function updateCNInAccordion() {
     var cn_data_option = document.getElementById("cnv_data_option_1").value;
     var div_cn_in_accordion = document.getElementById("div_cn_in_accordion");
@@ -47,7 +48,7 @@ function convertJsonToCsv(jsonObject) {
         let tr_keys = Object.keys(jsonObject[i]);
         for (let j = 0; j < tr_keys.length; j++) {
             csvString += ((jsonObject[i][tr_keys[j]] === null) || (jsonObject[i][tr_keys[j]] === undefined)) ? '\"\"' : "\"" + jsonObject[i][tr_keys[j]] + "\"";
-            if (j < (tr_keys.length-1)) {
+            if (j < (tr_keys.length - 1)) {
                 csvString += ',';
             }
         }
@@ -91,7 +92,7 @@ function check_all_cn() {
 
 
 function uncheck_all_phenotypes(organism) {
-    let ids = document.querySelectorAll('input[id^='+organism+'_phenotype_]');
+    let ids = document.querySelectorAll('input[id^=' + organism + '_phenotype_]');
 
     for (let i = 0; i < ids.length; i++) {
         if (ids[i].checked) {
@@ -102,7 +103,7 @@ function uncheck_all_phenotypes(organism) {
 
 
 function check_all_phenotypes(organism) {
-    let ids = document.querySelectorAll('input[id^='+organism+'_phenotype_]');
+    let ids = document.querySelectorAll('input[id^=' + organism + '_phenotype_]');
 
     for (let i = 0; i < ids.length; i++) {
         if (!ids[i].checked) {
@@ -113,7 +114,7 @@ function check_all_phenotypes(organism) {
 
 
 function uncheck_all(organism) {
-    let ids = document.querySelectorAll('input[id^=CN],input[id^='+organism+'_phenotype_]');
+    let ids = document.querySelectorAll('input[id^=CN],input[id^=' + organism + '_phenotype_]');
 
     for (let i = 0; i < ids.length; i++) {
         if (ids[i].checked) {
@@ -124,7 +125,7 @@ function uncheck_all(organism) {
 
 
 function check_all(organism) {
-    let ids = document.querySelectorAll('input[id^=CN],input[id^='+organism+'_phenotype_]');
+    let ids = document.querySelectorAll('input[id^=CN],input[id^=' + organism + '_phenotype_]');
 
     for (let i = 0; i < ids.length; i++) {
         if (!ids[i].checked) {
@@ -155,7 +156,7 @@ function constructInfoTable(organism, res, chromosome, position_start, position_
             detail_th.setAttribute("style", "border:1px solid black; min-width:80px; height:18.5px;");
             var detail_a = document.createElement('a');
             detail_a.target = "_blank";
-            detail_a.href = "../viewCNVAndPhenotypeFigures/"+organism+"?chromosome_1=" + chromosome + "&position_start_1=" + position_start + "&position_end_1=" + position_end + "&width_1=" + res[0]['Width'] + "&strand_1=" + res[0]['Strand'] + "&cnv_data_option_1=" + cnv_data_option + "&phenotype_1=" + header_array[i] +"&cn_1=" + cn_array.join("%0D%0A");;
+            detail_a.href = "../viewCNVAndPhenotypeFigures/" + organism + "?chromosome_1=" + chromosome + "&position_start_1=" + position_start + "&position_end_1=" + position_end + "&width_1=" + res[0]['Width'] + "&strand_1=" + res[0]['Strand'] + "&cnv_data_option_1=" + cnv_data_option + "&phenotype_1=" + header_array[i] + "&cn_1=" + cn_array.join("%0D%0A");;
             detail_a.innerHTML = header_array[i];
             detail_th.appendChild(detail_a);
             detail_header_tr.appendChild(detail_th);
@@ -167,7 +168,7 @@ function constructInfoTable(organism, res, chromosome, position_start, position_
 
     for (let i = 0; i < res.length; i++) {
         var detail_tr = document.createElement("tr");
-        detail_tr.style.backgroundColor = ((i%2) ? "#FFFFFF" : "#DDFFDD");
+        detail_tr.style.backgroundColor = ((i % 2) ? "#FFFFFF" : "#DDFFDD");
         for (let j = 0; j < header_array.length; j++) {
             var detail_td = document.createElement("td");
             detail_td.setAttribute("style", "border:1px solid black; min-width:80px; height:18.5px;");
@@ -183,7 +184,7 @@ function constructInfoTable(organism, res, chromosome, position_start, position_
 
 function queryPhenotypeDescription(organism) {
     $.ajax({
-        url: 'queryPhenotypeDescription/'+organism,
+        url: 'queryPhenotypeDescription/' + organism,
         type: 'GET',
         contentType: 'application/json',
         data: {
@@ -220,7 +221,7 @@ function queryCNVAndPhenotype(organism) {
     let cn_ids = document.querySelectorAll('input[id^=CN]');
     let cn_array = [];
 
-    let phenotype_ids = document.querySelectorAll('input[id^='+organism+'_phenotype_]');
+    let phenotype_ids = document.querySelectorAll('input[id^=' + organism + '_phenotype_]');
     let phenotype_array = [];
 
     for (let i = 0; i < cn_ids.length; i++) {
@@ -238,7 +239,7 @@ function queryCNVAndPhenotype(organism) {
 
     if (chromosome_1 && position_start_1 && position_end_1 && cn_array.length > 0) {
         $.ajax({
-            url: 'queryCNVAndPhenotype/'+organism,
+            url: 'queryCNVAndPhenotype/' + organism,
             type: 'GET',
             contentType: 'application/json',
             data: {
@@ -264,7 +265,7 @@ function queryCNVAndPhenotype(organism) {
                     document.getElementById('CNV_and_Phenotye_detail_table').appendChild(error_message);
                     document.getElementById('CNV_and_Phenotye_detail_table').style.overflow = 'visible';
                 }
-                
+
             },
             error: function (xhr, status, error) {
                 console.log('Error with code ' + xhr.status + ': ' + xhr.statusText);
@@ -290,7 +291,7 @@ function downloadCNVAndPhenotype(organism) {
     let cn_ids = document.querySelectorAll('input[id^=CN]');
     let cn_array = [];
 
-    let phenotype_ids = document.querySelectorAll('input[id^='+organism+'_phenotype_]');
+    let phenotype_ids = document.querySelectorAll('input[id^=' + organism + '_phenotype_]');
     let phenotype_array = [];
 
     for (let i = 0; i < cn_ids.length; i++) {
@@ -307,7 +308,7 @@ function downloadCNVAndPhenotype(organism) {
 
     if (chromosome_1 && position_start_1 && position_end_1 && cn_array.length > 0) {
         $.ajax({
-            url: 'queryCNVAndPhenotype/'+organism,
+            url: 'queryCNVAndPhenotype/' + organism,
             type: 'GET',
             contentType: 'application/json',
             data: {
@@ -325,11 +326,11 @@ function downloadCNVAndPhenotype(organism) {
                 if (res.length > 0) {
                     let csvString = convertJsonToCsv(res);
                     createAndDownloadCsvFile(csvString, String(organism) + "_" + String(chromosome_1) + "_" + String(position_start_1) + "_" + String(position_end_1) + "_data");
-                    
+
                 } else {
                     alert("Please select CN to download data!!!");
                 }
-                
+
             },
             error: function (xhr, status, error) {
                 console.log('Error with code ' + xhr.status + ': ' + xhr.statusText);
